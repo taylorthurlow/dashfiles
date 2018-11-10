@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+
+require 'dashfiles'
+
+Dashfiles::CLI.start(ARGV)

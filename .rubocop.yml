@@ -1,7 +1,7 @@
 require: rubocop-rspec
 
 AllCops:
-  TargetRubyVersion: 2.3
+  TargetRubyVersion: 2.5
   Exclude:
     - 'vendor/**/*'
     - 'tmp/**/*'
@@ -36,6 +36,9 @@ Style/BlockDelimiters:
     - 'spec/**/*'
 
 Style/RedundantReturn:
+  Enabled: false
+
+Style/RegexpLiteral:
   Enabled: false
 
 Metrics/ClassLength:

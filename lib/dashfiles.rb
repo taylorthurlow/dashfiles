@@ -1,23 +1,26 @@
 require 'dashfiles'
-require 'thor'
 
 module Dashfiles
-  class CLI < Thor
-    map ['--version'] => :__version
+  attr_accessor :config
 
-    desc 'add FILE', 'Add a new dotfile.'
-    long_desc <<~LONGDESC
-      `dashfiles add [file]` will take an existing, unlinked dotfile from your
-      filesystem, move it into your dashfiles directory, and symlink it back
-      into its original location.
-    LONGDESC
-    def add(path)
-      puts "Added from path: #{path}."
-    end
+  @config = {
+    dashfiles_root_directory: File.join(Dir.home, '.dashfiles'),
+    dashfiles_config_path: File.join(Dir.home, '.dashfiles', 'dashfiles.yaml')
+  }
 
-    desc '--version', 'Print the version number.'
-    def __version
-      puts Dashfiles::VERSION
+  @valid_config_keys = @config.keys
+
+  def self.configure(options = {})
+    options.each do |k, v|
+      @config[k.to_sym] = v if @valid_config_keys.include? k.to_sym
     end
+  end
+
+  def self.configure_with(config_file)
+    configure(YAML.safe_load(File.open(config_file)))
+  rescue Errno::ENOENT
+    STDERR.puts "Couldn't find a configuration file, using defaults."
+  rescue Psych::SyntaxError
+    STDERR.puts 'Configuration file contains invalid syntax, using defaults.'
   end
 end
